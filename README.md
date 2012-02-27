@@ -40,8 +40,9 @@ Not nearly all functions of the c++ version of libphonenumber are implemented.
 
 libphonenumberphp exports the following class:
 
-<!-- java seems to give the best highlighting here -->
-```java
+```php
+<?
+
 class PhoneNumberUtil {
   // Phone number types:
   const FIXED_LINE;
