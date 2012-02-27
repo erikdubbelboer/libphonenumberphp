@@ -1,4 +1,3 @@
-
 libphonenumberphp
 ==================
 
@@ -41,7 +40,8 @@ Not nearly all functions of the c++ version of libphonenumber are implemented.
 
 libphonenumberphp exports the following class:
 
-`
+<!-- java seems to give the best highlighting here -->
+```java
 class PhoneNumberUtil {
   // Phone number types:
   const FIXED_LINE;
@@ -78,11 +78,11 @@ class PhoneNumberUtil {
   // Parse a string into a PhoneNumber resource object.
   // Returns one of the Parsing errors constants defined above. NO_PARSING_ERROR is returned if it parsed correctly.
   // Note that validation of whether the number is actually a valid number for a particular region is not performed. This can be done separately with IsValidNumber()
-  public static function /*int*/ Parse(string number, string default_region, PhoneNumber &phonenumber);
+  public static function Parse(string number, string default_region, PhoneNumber &phonenumber);
 
   // Gets the type of a phone number.
   // Returns one of the Phone number type constants defined above.
-  public static function /*int*/ GetNumberType(PhoneNumber phonenumber);
+  public static function GetNumberType(PhoneNumber phonenumber);
 
   public static function IsValidNumber();
 
@@ -94,7 +94,7 @@ class PhoneNumberUtil {
 
   public static function GetRegionCodeForCountryCode();
 }
-`
+```
 
 For more documentation see [phonenumberutil.h](http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h) from libphonenumber.
 
