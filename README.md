@@ -46,19 +46,23 @@ class PhoneNumberUtil {
   // Phone number types:
   const FIXED_LINE;
   const MOBILE;
-  // In some regions (e.g. the USA), it is impossible to distinguish between fixed-line and mobile numbers by looking at the phone number itself.
+  // In some regions (e.g. the USA), it is impossible to distinguish between fixed-line and mobile numbers
+   // by looking at the phone number itself.
   const FIXED_LINE_OR_MOBILE;
   // Freephone lines
   const TOLL_FREE;
   const PREMIUM_RATE;
-  // The cost of this call is shared between the caller and the recipient, and is hence typically less than PREMIUM_RATE calls. See http://en.wikipedia.org/wiki/Shared_Cost_Service for more information.
+  // The cost of this call is shared between the caller and the recipient, and is hence typically less
+  // than PREMIUM_RATE calls. See http://en.wikipedia.org/wiki/Shared_Cost_Service for more information.
   const SHARED_COST;
   // Voice over IP numbers. This includes TSoIP (Telephony Service over IP).
   const VOIP;
-  // A personal number is associated with a particular person, and may be routed to either a MOBILE or FIXED_LINE number. Some more information can be found here: http://en.wikipedia.org/wiki/Personal_Numbers
+  // A personal number is associated with a particular person, and may be routed to either a MOBILE or
+  // FIXED_LINE number. Some more information can be found here: http://en.wikipedia.org/wiki/Personal_Numbers
   const PERSONAL_NUMBER;
   const PAGER;
-  // Used for "Universal Access Numbers" or "Company Numbers". They may be further routed to specific offices, but allow one number to be used for a company.
+  // Used for "Universal Access Numbers" or "Company Numbers". They may be further routed to specific
+  // offices, but allow one number to be used for a company.
   const UAN;
   // Used for "Voice Mail Access Numbers".
   const VOICEMAIL;
@@ -77,24 +81,41 @@ class PhoneNumberUtil {
 
   // Parse a string into a PhoneNumber resource object.
   // Returns one of the Parsing errors constants defined above. NO_PARSING_ERROR is returned if it parsed correctly.
-  // Note that validation of whether the number is actually a valid number for a particular region is not performed. This can be done separately with IsValidNumber()
+  // Note that validation of whether the number is actually a valid number for a particular region is not performed.
+  // This can be done separately with IsValidNumber()
   public static function Parse(string number, string default_region, PhoneNumber &phonenumber);
 
   // Gets the type of a phone number.
   // Returns one of the Phone number type constants defined above.
   public static function GetNumberType(PhoneNumber phonenumber);
 
-  public static function IsValidNumber();
+  // Returns either true of false.
+  // Tests whether a phone number matches a valid pattern. Note this doesn't verify the number is actually in use,
+  // which is impossible to tell by just looking at a number itself.
+  public static function IsValidNumber(PhoneNumber phonenumber);
 
-  public static function IsValidNumberForRegion();
+  // Returns either true of false.
+  // If the country calling code is not the same as the country calling code for the region, this immediately exits
+  // with false. After this, the specific number pattern rules for the region are examined.
+  public static function IsValidNumberForRegion(PhoneNumber phonenumber, string region);
 
-  public static function GetRegionCodeForNumber();
+  // Returns nothing.
+  // Fills region with the region code for where a phone number is from.
+  public static function GetRegionCodeForNumber(PhoneNumber phonenumber, string &region);
 
-  public static function GetCountryCodeForRegion();
+  // Returns the country calling code for a specific region. For example, this would be 1 for the United States,
+  // and 64 for New Zealand.
+  public static function GetCountryCodeForRegion(string region);
 
-  public static function GetRegionCodeForCountryCode();
+  // Returns nothing.
+  // Fills region with the the region code that matches the specific country code. Note that it is possible that several
+  // regions share the same country calling code (e.g. US and Canada), and in that case, only one of the
+  //  regions (normally the one with the largest population) is returned.
+  public static function GetRegionCodeForCountryCode(int countrycode, string &region);
 }
 ```
+
+For example see [test.php](https://github.com/ErikDubbelboer/libphonenumberphp/blob/master/test.php).
 
 For more documentation see [phonenumberutil.h](http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h) from libphonenumber.
 
