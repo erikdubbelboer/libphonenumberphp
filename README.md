@@ -44,6 +44,13 @@ libphonenumberphp exports the following class:
 <?
 
 class PhoneNumberUtil {
+  // Format types:
+  const E164; // +31651245374
+  const INTERNATIONAL; // +31 6 51245374
+  const NATIONAL; // 06 51245374
+  const RFC3966; // +31-6-51245374
+
+
   // Phone number types:
   const FIXED_LINE;
   const MOBILE;
@@ -79,6 +86,9 @@ class PhoneNumberUtil {
   const TOO_SHORT_NSN;
   const TOO_LONG_NSN;
 
+
+
+  public static function Format(PhoneNumber phonenumber, int format, string &formatted);
 
   // Parse a string into a PhoneNumber resource object.
   // Returns one of the Parsing errors constants defined above. NO_PARSING_ERROR is returned if it parsed correctly.

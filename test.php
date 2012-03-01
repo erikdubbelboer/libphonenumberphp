@@ -1,7 +1,8 @@
 #!/usr/bin/php -d extension=./modules/libphonenumberphp.so
 <?
 
-error_reporting(0);
+
+error_reporting(E_ALL | E_STRICT);
 
 
 function test($name, $number, $cc, $parse, $valid = false, $type = 0) {
@@ -27,9 +28,12 @@ function test($name, $number, $cc, $parse, $valid = false, $type = 0) {
 
 
 test('valid full mobile number'    , '+31651245374'   , 'ZZ', PhoneNumberUtil::NO_PARSING_ERROR          , true, PhoneNumberUtil::MOBILE);
-test('invalid number'              , '651245374'      , 'ZZ', PhoneNumberUtil::INVALID_COUNTRY_CODE_ERROR);
 test('valid region specific number', '6 512 45 374'   , 'NL', PhoneNumberUtil::NO_PARSING_ERROR          , true, PhoneNumberUtil::MOBILE);
 test('valid full land number'      , '+31 848-393-464', 'ZZ', PhoneNumberUtil::NO_PARSING_ERROR          , true, PhoneNumberUtil::FIXED_LINE);
+
+error_reporting(0);
+test('invalid number'              , '651245374'      , 'ZZ', PhoneNumberUtil::INVALID_COUNTRY_CODE_ERROR);
+error_reporting(E_ALL | E_STRICT);
 
 
 PhoneNumberUtil::Parse('+31651245374', 'ZZ', &$p);
@@ -41,6 +45,14 @@ if (!PhoneNumberUtil::IsValidNumberForRegion($p, 'NL')) {
 echo '.';
 if (PhoneNumberUtil::IsValidNumberForRegion($p, 'BE')) {
   echo "IsValidNumberForRegion 2 failed!\n";
+}
+
+
+echo '.';
+PhoneNumberUtil::Format($p, PhoneNumberUtil::RFC3966, &$s);
+
+if ($s != '+31-6-51245374') {
+  echo "Format failed!\n";
 }
 
 
