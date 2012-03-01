@@ -1,4 +1,4 @@
-#!/usr/bin/php -d extension=./modules/libphonenumberphp.so
+#!/usr/bin/php -c . -d extension=./modules/libphonenumberphp.so
 <?
 
 
@@ -15,6 +15,10 @@ function test($name, $number, $cc, $parse, $valid = false, $type = 0) {
     return;
   }
 
+  if (is_null($p)) {
+    return;
+  }
+
   if (PhoneNumberUtil::isValidNumber($p) != $valid) {
     echo $name . " failed on valid!\n";
     return;
@@ -27,13 +31,11 @@ function test($name, $number, $cc, $parse, $valid = false, $type = 0) {
 }
 
 
-test('valid full mobile number'    , '+31651245374'   , 'ZZ', PhoneNumberUtil::NO_PARSING_ERROR          , true, PhoneNumberUtil::MOBILE);
-test('valid region specific number', '6 512 45 374'   , 'NL', PhoneNumberUtil::NO_PARSING_ERROR          , true, PhoneNumberUtil::MOBILE);
-test('valid full land number'      , '+31 848-393-464', 'ZZ', PhoneNumberUtil::NO_PARSING_ERROR          , true, PhoneNumberUtil::FIXED_LINE);
+test('valid full mobile number'    , '+31651245374'   , 'ZZ', PhoneNumberUtil::NO_PARSING_ERROR, true, PhoneNumberUtil::MOBILE);
+test('valid region specific number', '6 512 45 374'   , 'NL', PhoneNumberUtil::NO_PARSING_ERROR, true, PhoneNumberUtil::MOBILE);
+test('valid full land number'      , '+31 848-393-464', 'ZZ', PhoneNumberUtil::NO_PARSING_ERROR, true, PhoneNumberUtil::FIXED_LINE);
 
-error_reporting(0);
-test('invalid number'              , '651245374'      , 'ZZ', PhoneNumberUtil::INVALID_COUNTRY_CODE_ERROR);
-error_reporting(E_ALL | E_STRICT);
+test('invalid number' , '651245374', 'ZZ', PhoneNumberUtil::INVALID_COUNTRY_CODE_ERROR);
 
 
 PhoneNumberUtil::Parse('+31651245374', 'ZZ', $p);
