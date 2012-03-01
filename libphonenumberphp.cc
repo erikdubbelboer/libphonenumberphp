@@ -43,6 +43,13 @@ static int       PhoneNumber_resource_list; // List of PhoneNumber pointers.
 
 
 
+
+ZEND_BEGIN_ARG_INFO(arginfo_Format, 0)
+  ZEND_ARG_INFO(0, phonenumber)
+  ZEND_ARG_INFO(0, format)
+  ZEND_ARG_INFO(1, formatted)
+ZEND_END_ARG_INFO();
+
 // See http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h#265
 PHP_METHOD(PhoneNumberUtil, Format) {
   zval*        numberz;
@@ -71,6 +78,16 @@ PHP_METHOD(PhoneNumberUtil, Format) {
   ZVAL_STRING(formattedz, formatted.c_str(), 1);
 }
 
+
+
+
+
+
+ZEND_BEGIN_ARG_INFO(arginfo_Parse, 0)
+  ZEND_ARG_INFO(0, number)
+  ZEND_ARG_INFO(0, default_region)
+  ZEND_ARG_INFO(1, phonenumber)
+ZEND_END_ARG_INFO();
 
 // See http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h#496
 PHP_METHOD(PhoneNumberUtil, Parse) {
@@ -111,6 +128,14 @@ PHP_METHOD(PhoneNumberUtil, Parse) {
 }
 
 
+
+
+
+
+ZEND_BEGIN_ARG_INFO(arginfo_GetNumberType, 0)
+  ZEND_ARG_INFO(0, phonenumber)
+ZEND_END_ARG_INFO();
+
 // See http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h#368
 PHP_METHOD(PhoneNumberUtil, GetNumberType) {
   zval*        numberz;
@@ -127,6 +152,14 @@ PHP_METHOD(PhoneNumberUtil, GetNumberType) {
 }
 
 
+
+
+
+
+ZEND_BEGIN_ARG_INFO(arginfo_IsValidNumber, 0)
+  ZEND_ARG_INFO(0, phonenumber)
+ZEND_END_ARG_INFO();
+
 // See http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h#371
 PHP_METHOD(PhoneNumberUtil, IsValidNumber) {
   zval*        numberz;
@@ -142,6 +175,15 @@ PHP_METHOD(PhoneNumberUtil, IsValidNumber) {
   RETURN_BOOL(util->IsValidNumber(*number));
 }
 
+
+
+
+
+
+ZEND_BEGIN_ARG_INFO(arginfo_IsValidNumberForRegion, 0)
+  ZEND_ARG_INFO(0, phonenumber)
+  ZEND_ARG_INFO(0, region)
+ZEND_END_ARG_INFO();
 
 // See http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h#376
 PHP_METHOD(PhoneNumberUtil, IsValidNumberForRegion) {
@@ -161,6 +203,15 @@ PHP_METHOD(PhoneNumberUtil, IsValidNumberForRegion) {
   RETURN_BOOL(util->IsValidNumberForRegion(*number, string(regionstr, regionstrlen)));
 }
 
+
+
+
+
+
+ZEND_BEGIN_ARG_INFO(arginfo_GetRegionCodeForNumber, 0)
+  ZEND_ARG_INFO(0, phonenumber)
+  ZEND_ARG_INFO(1, region)
+ZEND_END_ARG_INFO();
 
 // See http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h#388
 PHP_METHOD(PhoneNumberUtil, GetRegionCodeForNumber) {
@@ -189,6 +240,14 @@ PHP_METHOD(PhoneNumberUtil, GetRegionCodeForNumber) {
 }
 
 
+
+
+
+
+ZEND_BEGIN_ARG_INFO(arginfo_GetCountryCodeForRegion, 0)
+  ZEND_ARG_INFO(0, region)
+ZEND_END_ARG_INFO();
+
 // See http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h#393
 PHP_METHOD(PhoneNumberUtil, GetCountryCodeForRegion) {
   char* regionstr;
@@ -201,6 +260,15 @@ PHP_METHOD(PhoneNumberUtil, GetCountryCodeForRegion) {
   RETURN_LONG(util->GetCountryCodeForRegion(string(regionstr, regionstrlen)));
 }
 
+
+
+
+
+
+ZEND_BEGIN_ARG_INFO(arginfo_GetRegionCodeForCountryCode, 0)
+  ZEND_ARG_INFO(0, countrycode)
+  ZEND_ARG_INFO(1, region)
+ZEND_END_ARG_INFO();
 
 // See http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h#397
 PHP_METHOD(PhoneNumberUtil, GetRegionCodeForCountryCode) {
@@ -225,16 +293,23 @@ PHP_METHOD(PhoneNumberUtil, GetRegionCodeForCountryCode) {
 
 
 
+
+
+
 // Exported class functions.
 zend_function_entry PhoneNumberUtil_methods[] = {
-  PHP_ME(PhoneNumberUtil, Format                     , NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-  PHP_ME(PhoneNumberUtil, Parse                      , NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-  PHP_ME(PhoneNumberUtil, GetNumberType              , NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-  PHP_ME(PhoneNumberUtil, IsValidNumber              , NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-  PHP_ME(PhoneNumberUtil, IsValidNumberForRegion     , NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-  PHP_ME(PhoneNumberUtil, GetRegionCodeForNumber     , NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-  PHP_ME(PhoneNumberUtil, GetCountryCodeForRegion    , NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-  PHP_ME(PhoneNumberUtil, GetRegionCodeForCountryCode, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+  #define ENTRY(name) PHP_ME(PhoneNumberUtil, name                     , arginfo_##name                     , ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+
+  ENTRY(Format)
+  ENTRY(Parse)
+  ENTRY(GetNumberType)
+  ENTRY(IsValidNumber)
+  ENTRY(IsValidNumberForRegion)
+  ENTRY(GetRegionCodeForNumber)
+  ENTRY(GetCountryCodeForRegion)
+  ENTRY(GetRegionCodeForCountryCode)
+
+  #undef ENTRY
 
   {NULL, NULL, NULL}
 };
@@ -265,11 +340,13 @@ PHP_MINIT_FUNCTION(libphonenumberphp) {
   // Register all class constants.
   #define REG(name) zend_declare_class_constant_long(PhoneNumberUtil_class, #name, sizeof(#name) - 1, PhoneNumberUtil::name TSRMLS_CC);
 
+  // Format types
   REG(E164);
   REG(INTERNATIONAL);
   REG(NATIONAL);
   REG(RFC3966);
 
+  // Phone number types
   REG(FIXED_LINE);
   REG(MOBILE);
   REG(FIXED_LINE_OR_MOBILE);
@@ -283,6 +360,7 @@ PHP_MINIT_FUNCTION(libphonenumberphp) {
   REG(VOICEMAIL);
   REG(UNKNOWN);
 
+  // Parsing errors
   REG(NO_PARSING_ERROR);
   REG(INVALID_COUNTRY_CODE_ERROR);
   REG(NOT_A_NUMBER);

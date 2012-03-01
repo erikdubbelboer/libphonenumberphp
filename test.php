@@ -8,7 +8,7 @@ error_reporting(E_ALL | E_STRICT);
 function test($name, $number, $cc, $parse, $valid = false, $type = 0) {
   echo '.';
 
-  $err = PhoneNumberUtil::Parse($number, $cc, &$p);
+  $err = PhoneNumberUtil::Parse($number, $cc, $p);
 
   if ($err != $parse) {
     echo $name . " failed on parse!\n";
@@ -36,7 +36,7 @@ test('invalid number'              , '651245374'      , 'ZZ', PhoneNumberUtil::I
 error_reporting(E_ALL | E_STRICT);
 
 
-PhoneNumberUtil::Parse('+31651245374', 'ZZ', &$p);
+PhoneNumberUtil::Parse('+31651245374', 'ZZ', $p);
 
 echo '.';
 if (!PhoneNumberUtil::IsValidNumberForRegion($p, 'NL')) {
@@ -49,14 +49,14 @@ if (PhoneNumberUtil::IsValidNumberForRegion($p, 'BE')) {
 
 
 echo '.';
-PhoneNumberUtil::Format($p, PhoneNumberUtil::RFC3966, &$s);
+PhoneNumberUtil::Format($p, PhoneNumberUtil::RFC3966, $s);
 
 if ($s != '+31-6-51245374') {
   echo "Format failed!\n";
 }
 
 
-PhoneNumberUtil::GetRegionCodeForNumber($p, &$cc);
+PhoneNumberUtil::GetRegionCodeForNumber($p, $cc);
 
 echo '.';
 if ($cc != 'NL') {
@@ -70,7 +70,7 @@ if (PhoneNumberUtil::GetCountryCodeForRegion('NL') != 31) {
 }
 
 
-PhoneNumberUtil::GetRegionCodeForCountryCode(31, &$cc);
+PhoneNumberUtil::GetRegionCodeForCountryCode(31, $cc);
 
 echo '.';
 if ($cc != 'NL') {

@@ -88,6 +88,13 @@ class PhoneNumberUtil {
 
 
 
+  // Formats a phone number in the specified format using default rules. Note
+  // that this does not promise to produce a phone number that the user can
+  // dial from where they are - although we do format in either NATIONAL or
+  // INTERNATIONAL format depending on what the client asks for, we do not
+  // currently support a more abbreviated format, such as for users in the
+  // same area who could potentially dial the number without area code.
+  // Returns nothing.
   public static function Format(PhoneNumber phonenumber, int format, string &formatted);
 
   // Parse a string into a PhoneNumber resource object.
