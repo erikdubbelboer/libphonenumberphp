@@ -25,3 +25,4 @@ modules
 run-tests.php
 libphonenumberphp.la
 libphonenumberphp.lo
+php_libphonenumberphp.lo

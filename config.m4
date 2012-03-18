@@ -10,5 +10,5 @@ if test "$PHP_LIBPHONENUMBERPHP" != "no"; then
   CXXFLAGS="$CXXFLAGS -Wno-write-strings"
   PHP_SUBST(LIBPHONENUMBERPHP_SHARED_LIBADD)
   PHP_ADD_LIBRARY_WITH_PATH(phonenumber, /usr/local/lib/, LIBPHONENUMBERPHP_SHARED_LIBADD)
-  PHP_NEW_EXTENSION(libphonenumberphp, libphonenumberphp.cc, $ext_shared)
+  PHP_NEW_EXTENSION(libphonenumberphp, php_libphonenumberphp.cc, $ext_shared)
 fi
