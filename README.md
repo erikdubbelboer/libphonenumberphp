@@ -9,7 +9,9 @@ Installing/Configuring
 
 Make sure to install the cpp version of libphonenumber using their [README](http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/README).
 
-To install the module, run:
+Don't forget to run `sudo make install` after the last `make` to install the library and header files in the correct directories.
+
+Next to install the module, run:
 
 <pre>
 phpize
