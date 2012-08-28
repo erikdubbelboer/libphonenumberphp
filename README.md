@@ -11,6 +11,20 @@ Make sure to install the cpp version of libphonenumber using their [README](http
 
 Don't forget to run `sudo make install` after the last `make` to install the library and header files in the correct directories.
 
+
+On new ubuntu systems you might need to fall back to an old version of libgtest. For this you'll need to add the following to your `/etc/apt/sources.list`:
+``
+deb http://nl.archive.ubuntu.com/ubuntu/ natty universe
+deb-src http://nl.archive.ubuntu.com/ubuntu/ natty universe
+```
+
+And then run:
+```
+sudo apt-get update
+sudo apt-get install libgtest-dev=1.5.0-1
+``
+
+
 Next to install the module, run:
 
 <pre>
