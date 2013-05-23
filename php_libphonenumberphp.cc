@@ -893,7 +893,7 @@ void PhoneNumber_resource_destruction_handler(zend_rsrc_list_entry *rsrc TSRMLS_
 PHP_MINIT_FUNCTION(libphonenumberphp) {
   util = PhoneNumberUtil::GetInstance();
 
-  PhoneNumberUtil::SetLogger(&logger);
+  util->SetLogger(&logger);
 
 
   // Register the PhoneNumber resource.
@@ -905,42 +905,42 @@ PHP_MINIT_FUNCTION(libphonenumberphp) {
 
 
   // Register all class constants.
-  #define REG(name) zend_declare_class_constant_long(PhoneNumberUtil_class, #name, sizeof(#name) - 1, PhoneNumberUtil::name TSRMLS_CC);
+  #define REG(ns, name) zend_declare_class_constant_long(PhoneNumberUtil_class, #ns "_" #name, sizeof(#ns "_" #name) - 1, PhoneNumberUtil::name TSRMLS_CC);
 
   // Format types
-  REG(E164);
-  REG(INTERNATIONAL);
-  REG(NATIONAL);
-  REG(RFC3966);
+  REG(FORMAT, E164);
+  REG(FORMAT, INTERNATIONAL);
+  REG(FORMAT, NATIONAL);
+  REG(FORMAT, RFC3966);
 
   // Phone number types
-  REG(FIXED_LINE);
-  REG(MOBILE);
-  REG(FIXED_LINE_OR_MOBILE);
-  REG(TOLL_FREE);
-  REG(PREMIUM_RATE);
-  REG(SHARED_COST);
-  REG(VOIP);
-  REG(PERSONAL_NUMBER);
-  REG(PAGER);
-  REG(UAN);
-  REG(VOICEMAIL);
-  REG(UNKNOWN);
+  REG(PHONE, FIXED_LINE);
+  REG(PHONE, MOBILE);
+  REG(PHONE, FIXED_LINE_OR_MOBILE);
+  REG(PHONE, TOLL_FREE);
+  REG(PHONE, PREMIUM_RATE);
+  REG(PHONE, SHARED_COST);
+  REG(PHONE, VOIP);
+  REG(PHONE, PERSONAL_NUMBER);
+  REG(PHONE, PAGER);
+  REG(PHONE, UAN);
+  REG(PHONE, VOICEMAIL);
+  REG(PHONE, UNKNOWN);
 
   // Types of phone number matches
-  REG(INVALID_NUMBER);
-  REG(NO_MATCH);
-  REG(SHORT_NSN_MATCH);
-  REG(NSN_MATCH);
-  REG(EXACT_MATCH);
+  REG(MATCH, INVALID_NUMBER);
+  REG(MATCH, NO_MATCH);
+  REG(MATCH, SHORT_NSN_MATCH);
+  REG(MATCH, NSN_MATCH);
+  REG(MATCH, EXACT_MATCH);
 
   // Parsing errors
-  REG(NO_PARSING_ERROR);
-  REG(INVALID_COUNTRY_CODE_ERROR);
-  REG(NOT_A_NUMBER);
-  REG(TOO_SHORT_AFTER_IDD);
-  REG(TOO_SHORT_NSN);
-  REG(TOO_LONG_NSN);
+  REG(ERROR, NO_PARSING_ERROR);
+  REG(ERROR, INVALID_COUNTRY_CODE_ERROR);
+  REG(ERROR, NOT_A_NUMBER);
+  REG(ERROR, TOO_SHORT_AFTER_IDD);
+  REG(ERROR, TOO_SHORT_NSN);
+  REG(ERROR, TOO_LONG_NSN);
 
   #undef REG
 
