@@ -55,12 +55,17 @@ class PhoneNumberUtil {
 	const MATCH_EXACT_MATCH = 4;
 
     /** enum ErrorType Parsing errors */
-	const ERROR_NONE = 0;
+	const ERROR_NO_PARSING_ERROR = 0;
 	const ERROR_INVALID_COUNTRY_CODE_ERROR = 0;
 	const ERROR_NOT_A_NUMBER = 0;
 	const ERROR_TOO_SHORT_AFTER_IDD = 0;
 	const ERROR_TOO_SHORT_NSN = 0;
 	const ERROR_TOO_LONG_NSN = 0;
+
+    const VALIDATION_IS_POSSIBLE = 0;
+    const VALIDATION_INVALID_COUNTRY_CODE = 0;
+    const VALIDATION_TOO_SHORT = 0;
+    const VALIDATION_TOO_LONG = 0;
 
     /**
      * Convenience method to get a list of what regions libphonenumber has metadata for.
@@ -158,7 +163,7 @@ class PhoneNumberUtil {
      * same area who could potentially dial the number without area code.
      * 
      * @param resource $number The phone number resource to be formatted
-     * @param string $number_format One of the FORMAT_ constants
+     * @param int $number_format One of the FORMAT_ constants
      * @param string $formatted_number The formatted number
      */
     public static function Format($number, $number_format, &$formatted_number) {}
@@ -266,6 +271,59 @@ class PhoneNumberUtil {
      * @param string $region
      */
     public static function GetRegionCodeForCountryCode($countryCode, &$region) {}
+
+    /**
+     * Checks whether a phone number is a possible number. It provides a more
+     * lenient check than IsValidNumber() in the following sense:
+     *   1. It only checks the length of phone numbers. In particular, it doesn't
+     *      check starting digits of the number.
+     *   2. It doesn't attempt to figure out the type of the number, but uses
+     *      general rules which applies to all types of phone numbers in a
+     *      region. Therefore, it is much faster than IsValidNumber().
+     *   3. For fixed line numbers, many regions have the concept of area code,
+     *      which together with subscriber number constitute the national
+     *      significant number. It is sometimes okay to dial the subscriber
+     *      number only when dialing in the same area. This function will return
+     *      true if the subscriber-number-only version is passed in. On the other
+     *      hand, because IsValidNumber() validates using information on both
+     *      starting digits (for fixed line numbers, that would most likely be
+     *      area codes) and length (obviously includes the length of area codes
+     *      for fixed line numbers), it will return false for the
+     *      subscriber-number-only version.
+     * 
+     * @param resource $number
+     *
+     * @return int One of the VALIDATION_ constants
+     */
+    public static function IsPossibleNumberWithReason($number) {}
+
+
+    /**
+     * Checks whether a phone number is a possible number given a number in the
+     * form of a string, and the country where the number could be dialed from.
+     * It provides a more lenient check than IsValidNumber(). See
+     * IsPossibleNumber(const PhoneNumber& number) for details.
+     *
+     * This method first parses the number, then invokes
+     * IsPossibleNumber(const PhoneNumber& number) with the resultant PhoneNumber
+     * object.
+     *
+     * $region_dialing_from represents the region that we are expecting the number
+     * to be dialed from. Note this is different from the region where the number
+     * belongs. For example, the number +1 650 253 0000 is a number that belongs
+     * to US. When written in this form, it could be dialed from any region. When
+     * it is written as 00 1 650 253 0000, it could be dialed from any region
+     * which uses an international dialling prefix of 00. When it is written as
+     * 650 253 0000, it could only be dialed from within the US, and when written
+     * as 253 0000, it could only be dialed from within a smaller area in the US
+     * (Mountain View, CA, to be more specific).
+     * 
+     * @param string $number
+     * @param string $region_dialling_from
+     *
+     * @return bool True if the provided $number is a correctly formatted phone number
+     */
+    public static function IsPossibleNumberForString($number, $region_dialling_from) {}
 
     /**
      * Gets a valid fixed-line number for the specified region. Returns false if
