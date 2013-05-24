@@ -576,8 +576,26 @@ PHP_METHOD(PhoneNumberUtil, GetRegionCodeForCountryCode) {
 
 
 
-// TODO: IsPossibleNumberWithReason
 // See http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h#416
+
+ZEND_BEGIN_ARG_INFO(arginfo_IsPossibleNumberWithReason, 0)
+  ZEND_ARG_INFO(0, number)
+ZEND_END_ARG_INFO();
+
+// See http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h#388
+PHP_METHOD(PhoneNumberUtil, IsPossibleNumberWithReason) {
+  zval*        numberz;
+  PhoneNumber* number;
+
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &numberz) == FAILURE) {
+    RETURN_NULL();
+  }
+
+  // Fetch the pointer to the PhoneNumber from our resource list.
+  ZEND_FETCH_RESOURCE(number, PhoneNumber*, &numberz, -1, PhoneNumber_resource_name, PhoneNumber_resource_list);
+
+  RETURN_LONG(util->IsPossibleNumberWithReason(*number));
+}
 
 
 
@@ -594,13 +612,26 @@ PHP_METHOD(PhoneNumberUtil, GetRegionCodeForCountryCode) {
 
 
 
-// TODO: IsPossibleNumberForString
+ZEND_BEGIN_ARG_INFO(arginfo_IsPossibleNumberForString, 0)
+  ZEND_ARG_INFO(0, number)
+  ZEND_ARG_INFO(0, region_dialling_from)
+ZEND_END_ARG_INFO();
+
 // See http://code.google.com/p/libphonenumber/source/browse/trunk/cpp/src/phonenumbers/phonenumberutil.h#439
+PHP_METHOD(PhoneNumberUtil, IsPossibleNumberForString) {
+  char* number;
+  int   numberlen;
 
+  char* region_dialling_from;
+  int   region_dialling_fromlen;
 
+  if (zend_parse_parameters_ex(0, ZEND_NUM_ARGS() TSRMLS_CC, "ss", &number, &numberlen,
+        &region_dialling_from, &region_dialling_fromlen) == FAILURE) {
+    RETURN_NULL();
+  }
 
-
-
+  RETURN_BOOL(util->IsPossibleNumberForString(string(number, numberlen), string(region_dialling_from, region_dialling_fromlen)));
+}
 
 
 ZEND_BEGIN_ARG_INFO(arginfo_GetExampleNumber, 0)
@@ -865,9 +896,9 @@ zend_function_entry PhoneNumberUtil_methods[] = {
   ENTRY(GetRegionCodeForCountryCode)
   //ENTRY(IsNANPACountry)
   //ENTRY(GetNddPrefixForRegion)
-  //ENTRY(IsPossibleNumberWithReason)
+  ENTRY(IsPossibleNumberWithReason)
   //ENTRY(IsPossibleNumber)
-  //ENTRY(IsPossibleNumberForString)
+  ENTRY(IsPossibleNumberForString)
   ENTRY(GetExampleNumber)
   ENTRY(GetExampleNumberForType)
   //ENTRY(GetExampleNumberForNonGeoEntity)
@@ -893,7 +924,7 @@ void PhoneNumber_resource_destruction_handler(zend_rsrc_list_entry *rsrc TSRMLS_
 PHP_MINIT_FUNCTION(libphonenumberphp) {
   util = PhoneNumberUtil::GetInstance();
 
-  PhoneNumberUtil::SetLogger(&logger);
+  util->SetLogger(&logger);
 
 
   // Register the PhoneNumber resource.
@@ -905,42 +936,48 @@ PHP_MINIT_FUNCTION(libphonenumberphp) {
 
 
   // Register all class constants.
-  #define REG(name) zend_declare_class_constant_long(PhoneNumberUtil_class, #name, sizeof(#name) - 1, PhoneNumberUtil::name TSRMLS_CC);
+  #define REG(ns, name) zend_declare_class_constant_long(PhoneNumberUtil_class, #ns "_" #name, sizeof(#ns "_" #name) - 1, PhoneNumberUtil::name TSRMLS_CC);
 
   // Format types
-  REG(E164);
-  REG(INTERNATIONAL);
-  REG(NATIONAL);
-  REG(RFC3966);
+  REG(FORMAT, E164);
+  REG(FORMAT, INTERNATIONAL);
+  REG(FORMAT, NATIONAL);
+  REG(FORMAT, RFC3966);
 
   // Phone number types
-  REG(FIXED_LINE);
-  REG(MOBILE);
-  REG(FIXED_LINE_OR_MOBILE);
-  REG(TOLL_FREE);
-  REG(PREMIUM_RATE);
-  REG(SHARED_COST);
-  REG(VOIP);
-  REG(PERSONAL_NUMBER);
-  REG(PAGER);
-  REG(UAN);
-  REG(VOICEMAIL);
-  REG(UNKNOWN);
+  REG(PHONE, FIXED_LINE);
+  REG(PHONE, MOBILE);
+  REG(PHONE, FIXED_LINE_OR_MOBILE);
+  REG(PHONE, TOLL_FREE);
+  REG(PHONE, PREMIUM_RATE);
+  REG(PHONE, SHARED_COST);
+  REG(PHONE, VOIP);
+  REG(PHONE, PERSONAL_NUMBER);
+  REG(PHONE, PAGER);
+  REG(PHONE, UAN);
+  REG(PHONE, VOICEMAIL);
+  REG(PHONE, UNKNOWN);
 
   // Types of phone number matches
-  REG(INVALID_NUMBER);
-  REG(NO_MATCH);
-  REG(SHORT_NSN_MATCH);
-  REG(NSN_MATCH);
-  REG(EXACT_MATCH);
+  REG(MATCH, INVALID_NUMBER);
+  REG(MATCH, NO_MATCH);
+  REG(MATCH, SHORT_NSN_MATCH);
+  REG(MATCH, NSN_MATCH);
+  REG(MATCH, EXACT_MATCH);
 
   // Parsing errors
-  REG(NO_PARSING_ERROR);
-  REG(INVALID_COUNTRY_CODE_ERROR);
-  REG(NOT_A_NUMBER);
-  REG(TOO_SHORT_AFTER_IDD);
-  REG(TOO_SHORT_NSN);
-  REG(TOO_LONG_NSN);
+  REG(ERROR, NO_PARSING_ERROR);
+  REG(ERROR, INVALID_COUNTRY_CODE_ERROR);
+  REG(ERROR, NOT_A_NUMBER);
+  REG(ERROR, TOO_SHORT_AFTER_IDD);
+  REG(ERROR, TOO_SHORT_NSN);
+  REG(ERROR, TOO_LONG_NSN);
+
+  // Validation result
+  REG(VALIDATION, IS_POSSIBLE);
+  REG(VALIDATION, INVALID_COUNTRY_CODE);
+  REG(VALIDATION, TOO_SHORT);
+  REG(VALIDATION, TOO_LONG);
 
   #undef REG
 

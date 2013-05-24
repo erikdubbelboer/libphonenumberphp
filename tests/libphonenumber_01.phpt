@@ -18,7 +18,7 @@ function test($name, $number, $cc, $parse, $valid = false, $type = 0) {
     return;
   }
 
-  if (PhoneNumberUtil::isValidNumber($p) != $valid) {
+  if (PhoneNumberUtil::IsValidNumber($p) != $valid) {
     echo $name . " failed on valid!\n";
     return;
   }
@@ -30,11 +30,11 @@ function test($name, $number, $cc, $parse, $valid = false, $type = 0) {
 }
 
 
-test('valid full mobile number'    , '+31651245374'   , 'ZZ', PhoneNumberUtil::NO_PARSING_ERROR, true, PhoneNumberUtil::MOBILE);
-test('valid region specific number', '6 512 45 374'   , 'NL', PhoneNumberUtil::NO_PARSING_ERROR, true, PhoneNumberUtil::MOBILE);
-test('valid full land number'      , '+31 848-393-464', 'ZZ', PhoneNumberUtil::NO_PARSING_ERROR, true, PhoneNumberUtil::FIXED_LINE);
+test('valid full mobile number'    , '+31651245374'   , 'ZZ', PhoneNumberUtil::ERROR_NO_PARSING_ERROR, true, PhoneNumberUtil::PHONE_MOBILE);
+test('valid region specific number', '6 512 45 374'   , 'NL', PhoneNumberUtil::ERROR_NO_PARSING_ERROR, true, PhoneNumberUtil::PHONE_MOBILE);
+test('valid full land number'      , '+31 848-393-464', 'ZZ', PhoneNumberUtil::ERROR_NO_PARSING_ERROR, true, PhoneNumberUtil::PHONE_FIXED_LINE);
 
-test('invalid number' , '651245374', 'ZZ', PhoneNumberUtil::INVALID_COUNTRY_CODE_ERROR);
+test('invalid number' , '651245374', 'ZZ', PhoneNumberUtil::ERROR_INVALID_COUNTRY_CODE_ERROR);
 
 
 PhoneNumberUtil::GetSupportedRegions($regions);
@@ -81,7 +81,7 @@ if (!is_resource($p)) {
 
 
 
-if (!PhoneNumberUtil::GetExampleNumberForType('NL', PhoneNumberUtil::MOBILE, $p)) {
+if (!PhoneNumberUtil::GetExampleNumberForType('NL', PhoneNumberUtil::PHONE_MOBILE, $p)) {
   echo "GetExampleNumberForType 1 failed!\n";
 }
 
@@ -110,14 +110,14 @@ if (PhoneNumberUtil::IsValidNumberForRegion($p, 'BE')) {
 }
 
 
-if (PhoneNumberUtil::IsNumberMatch($p, $p) != PhoneNumberUtil::EXACT_MATCH) {
+if (PhoneNumberUtil::IsNumberMatch($p, $p) != PhoneNumberUtil::MATCH_EXACT_MATCH) {
     echo "IsNumberMatch 1 failed!\n";
 }
 
 
-PhoneNumberUtil::Format($p, PhoneNumberUtil::RFC3966, $s);
+PhoneNumberUtil::Format($p, PhoneNumberUtil::FORMAT_RFC3966, $s);
 
-if ($s != '+31-6-51245374') {
+if ($s != 'tel:+31-6-51245374') {
   echo "Format failed!\n";
 }
 
@@ -142,6 +142,3 @@ if ($cc != 'NL') {
 
 
 echo "all tests done.\n";
-
---EXPECT--
-all tests done.
